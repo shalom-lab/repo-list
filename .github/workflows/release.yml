@@ -1,0 +1,95 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*' # 当推送版本标签时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Create ZIP file
+        run: |
+          zip -r chrome-extension.zip . \
+            -x "*.git*" \
+            -x "*.github*" \
+            -x "README.md" \
+            -x "LICENSE" \
+            -x "firefox/*"
+
+      - name: Create Firefox version
+        run: |
+          mkdir firefox
+          cp -r * firefox/ 2>/dev/null || :
+          # 修改 manifest.json 适配 Firefox
+          jq '.manifest_version = 2 | 
+              del(.action) |
+              .browser_action = {} |
+              del(.side_panel) |
+              .sidebar_action = {
+                "default_title": "GitHub Repos Sidebar",
+                "default_panel": "sidepanel.html",
+                "default_icon": {
+                  "16": "icons/icon16.png",
+                  "48": "icons/icon48.png",
+                  "128": "icons/icon128.png"
+                }
+              }' manifest.json > firefox/manifest.json
+          cd firefox
+          zip -r ../firefox-addon.zip .
+
+      - name: Upload Chrome artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: chrome-extension
+          path: chrome-extension.zip
+
+      - name: Upload Firefox artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: firefox-addon
+          path: firefox-addon.zip
+
+  publish-chrome:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: chrome-extension
+          
+      - name: Upload to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@v4.0.1
+        with:
+          file-path: chrome-extension.zip
+          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+
+  publish-firefox:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: firefox-addon
+          
+      - name: Upload to Firefox Add-ons
+        uses: trmcnvn/firefox-addon@v1
+        with:
+          uuid: ${{ secrets.FIREFOX_ADDON_ID }}
+          xpi: firefox-addon.zip
+          manifest: manifest.json
+          api-key: ${{ secrets.FIREFOX_API_KEY }}
+          api-secret: ${{ secrets.FIREFOX_API_SECRET }} 

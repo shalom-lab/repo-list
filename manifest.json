@@ -1,0 +1,37 @@
+{
+    "manifest_version": 3,
+    "name": "GitHub Repos Sidebar",
+    "version": "1.0",
+    "description": "在GitHub页面显示用户仓库列表的侧边栏",
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "permissions": [
+        "activeTab",
+        "sidePanel",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://api.github.com/*"
+    ],
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {},
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Alt+G"
+            },
+            "description": "打开GitHub仓库侧边栏"
+        }
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    }
+}
