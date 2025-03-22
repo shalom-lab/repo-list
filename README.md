@@ -14,6 +14,10 @@ A browser extension that displays GitHub repositories in a sidebar, making it ea
   <img src="screenshots/promo-large.png" alt="Preview" width="640">
 </p>
 
+<p align="center">
+  <img src="screenshots/promo-large.png" alt="Preview" width="640">
+</p>
+
 ### ✨ Features
 
 - 🔍 **Smart Sidebar**

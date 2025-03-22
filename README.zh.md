@@ -10,9 +10,6 @@
 
 这是一个浏览器扩展，可以在侧边栏显示 GitHub 仓库，让您更轻松地浏览和搜索用户的仓库。支持12种语言，提供清晰的 GitHub 风格界面。
 
-<p align="center">
-  <img src="screenshots/promo-large.png" alt="Preview" width="640">
-</p>
 
 ### ✨ 主要功能
 
@@ -55,6 +52,10 @@
   - 星标与非星标仓库的视觉区分
   - 悬停效果和交互元素
   - 适应不同屏幕尺寸的响应式布局
+
+<p align="center">
+  <img src="screenshots/promo-large.png" alt="Preview" width="640">
+</p>
 
 ### 🚀 安装方法
 
