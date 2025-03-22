@@ -1,5 +1,9 @@
 name: Release Extension
 
+# 添加权限配置
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -18,106 +22,89 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          
-      - name: Get version
-        id: get_version
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION="${{ github.event.inputs.version }}"
-          else
-            VERSION="${GITHUB_REF#refs/tags/}"
-          fi
-          # 移除版本号前缀 'v'
-          CLEAN_VERSION="${VERSION#v}"
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_OUTPUT
-          
-      - name: Update manifest version
-        run: |
-          # 更新 manifest.json 的版本号
-          jq '.version = "${{ steps.get_version.outputs.CLEAN_VERSION }}"' manifest.json > temp.json && mv temp.json manifest.json
-          cat manifest.json
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        npm install -g web-ext
+        
+    - name: Get version
+      id: get_version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        else
+          VERSION="${GITHUB_REF#refs/tags/}"
+        fi
+        # 移除版本号前缀 'v'
+        CLEAN_VERSION="${VERSION#v}"
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+        
+    - name: Update manifest version
+      run: |
+        # 更新 manifest.json 的版本号
+        jq '.version = "${{ steps.get_version.outputs.CLEAN_VERSION }}"' manifest.json > temp.json && mv temp.json manifest.json
+        cat manifest.json
+        
+    - name: Build Chromium-based Extension
+      run: |
+        mkdir -p dist/chrome/icons
+        cp manifest.json background.js i18n.js sidepanel.js sidepanel.html styles.css dist/chrome/
+        cp -r icons/* dist/chrome/icons/
+        cp LICENSE dist/chrome/ || true
+        cd dist/chrome
+        zip -r ../chrome-extension.zip *
+        
+    - name: Build Firefox Extension
+      run: |
+        mkdir -p dist/firefox/icons
+        cp background.js i18n.js sidepanel.js sidepanel.html styles.css dist/firefox/
+        cp -r icons/* dist/firefox/icons/
+        cp LICENSE dist/firefox/ || true
+        
+        # 修改 manifest.json 适配 Firefox
+        jq '.manifest_version = 2 | 
+            del(.action) |
+            .browser_action = {} |
+            del(.side_panel) |
+            .sidebar_action = {
+              "default_title": "GitHub Repos Sidebar",
+              "default_panel": "sidepanel.html",
+              "default_icon": {
+                "16": "icons/icon16.png",
+                "48": "icons/icon48.png",
+                "128": "icons/icon128.png"
+              }
+            } |
+            del(.commands._execute_action.suggested_key) |
+            .commands._execute_action.suggested_key = {
+              "default": "Alt+G"
+            }' manifest.json > dist/firefox/manifest.json
+        
+        # 使用 web-ext 构建 Firefox 扩展
+        cd dist/firefox
+        web-ext build --overwrite-dest
+        mv web-ext-artifacts/*.zip ../firefox-addon.zip
 
-      - name: Create ZIP file for Chrome
-        run: |
-          # 创建临时目录用于打包Chrome版本
-          mkdir -p chrome_build
-          
-          # 复制所有必要文件到临时目录
-          cp manifest.json chrome_build/
-          cp background.js chrome_build/
-          cp i18n.js chrome_build/
-          cp sidepanel.js chrome_build/
-          cp sidepanel.html chrome_build/
-          cp styles.css chrome_build/
-          cp LICENSE chrome_build/ || true
-          
-          # 复制icons目录
-          mkdir -p chrome_build/icons
-          cp -r icons/* chrome_build/icons/
-          
-          # 切换到临时目录并创建ZIP文件
-          cd chrome_build
-          zip -r ../chrome-extension.zip *
+    - name: Upload Chrome artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: chrome-extension
+        path: dist/chrome-extension.zip
 
-      - name: Create Firefox version
-        run: |
-          # 创建临时目录用于打包Firefox版本
-          mkdir -p firefox_build
-          
-          # 复制所有必要文件到临时目录
-          cp background.js firefox_build/
-          cp i18n.js firefox_build/
-          cp sidepanel.js firefox_build/
-          cp sidepanel.html firefox_build/
-          cp styles.css firefox_build/
-          cp LICENSE firefox_build/ || true
-          
-          # 复制icons目录
-          mkdir -p firefox_build/icons
-          cp -r icons/* firefox_build/icons/
-          
-          # 修改 manifest.json 适配 Firefox
-          jq '.manifest_version = 2 | 
-              del(.action) |
-              .browser_action = {} |
-              del(.side_panel) |
-              .sidebar_action = {
-                "default_title": "GitHub Repos Sidebar",
-                "default_panel": "sidepanel.html",
-                "default_icon": {
-                  "16": "icons/icon16.png",
-                  "48": "icons/icon48.png",
-                  "128": "icons/icon128.png"
-                }
-              } |
-              del(.commands._execute_action.suggested_key) |
-              .commands._execute_action.suggested_key = {
-                "default": "Alt+G"
-              }' manifest.json > firefox_build/manifest.json
-          
-          # 切换到临时目录并创建ZIP文件
-          cd firefox_build
-          zip -r ../firefox-addon.zip *
-
-      - name: Upload Chrome artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: chrome-extension
-          path: chrome-extension.zip
-
-      - name: Upload Firefox artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: firefox-addon
-          path: firefox-addon.zip
+    - name: Upload Firefox artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: firefox-addon
+        path: dist/firefox-addon.zip
 
   publish-chrome:
     needs: build
@@ -169,7 +156,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-            echo "PRERELEASE=${{ github.event.inputs.prerelease }}" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=${{ github.event.inputs.prerelease || 'false' }}" >> $GITHUB_OUTPUT
           else
             echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
             echo "PRERELEASE=false" >> $GITHUB_OUTPUT
