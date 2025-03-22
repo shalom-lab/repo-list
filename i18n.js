@@ -7,7 +7,8 @@ const i18n = {
         noRepos: "未找到仓库或用户不存在",
         invalidPage: "请访问 GitHub 用户页面或仓库页面",
         notGitHub: "请访问 GitHub 页面使用此扩展",
-        loadFailed: "无法加载仓库信息"
+        loadFailed: "无法加载仓库信息",
+        starPrompt: "喜欢此扩展？请给我们"
     },
     en: {
         searchPlaceholder: "Search repositories...",
@@ -17,7 +18,8 @@ const i18n = {
         noRepos: "No repositories found or user does not exist",
         invalidPage: "Please visit a GitHub user or repository page",
         notGitHub: "Please visit GitHub to use this extension",
-        loadFailed: "Failed to load repositories"
+        loadFailed: "Failed to load repositories",
+        starPrompt: "Like this extension? Please give us a"
     },
     ja: {
         searchPlaceholder: "リポジトリを検索...",
@@ -27,7 +29,8 @@ const i18n = {
         noRepos: "リポジトリが見つからないか、ユーザーが存在しません",
         invalidPage: "GitHubのユーザーページまたはリポジトリページにアクセスしてください",
         notGitHub: "この拡張機能を使用するにはGitHubにアクセスしてください",
-        loadFailed: "リポジトリの読み込みに失敗しました"
+        loadFailed: "リポジトリの読み込みに失敗しました",
+        starPrompt: "この拡張機能が気に入りましたか？"
     },
     ko: {
         searchPlaceholder: "저장소 검색...",
@@ -37,7 +40,8 @@ const i18n = {
         noRepos: "저장소를 찾을 수 없거나 사용자가 존재하지 않습니다",
         invalidPage: "GitHub 사용자 또는 저장소 페이지를 방문해주세요",
         notGitHub: "이 확장 프로그램을 사용하려면 GitHub을 방문하세요",
-        loadFailed: "저장소를 불러올 수 없습니다"
+        loadFailed: "저장소를 불러올 수 없습니다",
+        starPrompt: "이 확장 프로그램이 마음에 드나요?"
     },
     fr: {
         searchPlaceholder: "Rechercher des dépôts...",
@@ -47,7 +51,8 @@ const i18n = {
         noRepos: "Aucun dépôt trouvé ou l'utilisateur n'existe pas",
         invalidPage: "Veuillez visiter une page utilisateur ou dépôt GitHub",
         notGitHub: "Veuillez visiter GitHub pour utiliser cette extension",
-        loadFailed: "Impossible de charger les dépôts"
+        loadFailed: "Impossible de charger les dépôts",
+        starPrompt: "Aimez cette extension? Donnez-nous une"
     },
     de: {
         searchPlaceholder: "Repositories durchsuchen...",
@@ -57,7 +62,8 @@ const i18n = {
         noRepos: "Keine Repositories gefunden oder Benutzer existiert nicht",
         invalidPage: "Bitte besuchen Sie eine GitHub-Benutzer- oder Repository-Seite",
         notGitHub: "Bitte besuchen Sie GitHub, um diese Erweiterung zu nutzen",
-        loadFailed: "Repositories konnten nicht geladen werden"
+        loadFailed: "Repositories konnten nicht geladen werden",
+        starPrompt: "Gefällt Ihnen diese Erweiterung? Geben Sie uns einen"
     },
     es: {
         searchPlaceholder: "Buscar repositorios...",
@@ -67,7 +73,8 @@ const i18n = {
         noRepos: "No se encontraron repositorios o el usuario no existe",
         invalidPage: "Por favor visite una página de usuario o repositorio de GitHub",
         notGitHub: "Por favor visite GitHub para usar esta extensión",
-        loadFailed: "No se pudieron cargar los repositorios"
+        loadFailed: "No se pudieron cargar los repositorios",
+        starPrompt: "¿Te gusta esta extensión? Danos una"
     },
     pt: {
         searchPlaceholder: "Pesquisar repositórios...",
@@ -77,7 +84,8 @@ const i18n = {
         noRepos: "Nenhum repositório encontrado ou usuário não existe",
         invalidPage: "Por favor, visite uma página de usuário ou repositório do GitHub",
         notGitHub: "Por favor, visite o GitHub para usar esta extensão",
-        loadFailed: "Não foi possível carregar os repositórios"
+        loadFailed: "Não foi possível carregar os repositórios",
+        starPrompt: "Gostou desta extensão? Dê-nos uma"
     },
     ru: {
         searchPlaceholder: "Поиск репозиториев...",
@@ -87,7 +95,8 @@ const i18n = {
         noRepos: "Репозитории не найдены или пользователь не существует",
         invalidPage: "Пожалуйста, посетите страницу пользователя или репозитория GitHub",
         notGitHub: "Пожалуйста, посетите GitHub для использования этого расширения",
-        loadFailed: "Не удалось загрузить репозитории"
+        loadFailed: "Не удалось загрузить репозитории",
+        starPrompt: "Понравилось расширение? Поставьте нам"
     },
     it: {
         searchPlaceholder: "Cerca repository...",
@@ -97,7 +106,8 @@ const i18n = {
         noRepos: "Nessun repository trovato o utente non esistente",
         invalidPage: "Visita una pagina utente o repository di GitHub",
         notGitHub: "Visita GitHub per utilizzare questa estensione",
-        loadFailed: "Impossibile caricare i repository"
+        loadFailed: "Impossibile caricare i repository",
+        starPrompt: "Ti piace questa estensione? Dacci una"
     },
     nl: {
         searchPlaceholder: "Zoek repositories...",
@@ -107,7 +117,8 @@ const i18n = {
         noRepos: "Geen repositories gevonden of gebruiker bestaat niet",
         invalidPage: "Bezoek een GitHub gebruikers- of repository-pagina",
         notGitHub: "Bezoek GitHub om deze extensie te gebruiken",
-        loadFailed: "Kon repositories niet laden"
+        loadFailed: "Kon repositories niet laden",
+        starPrompt: "Vindt u deze extensie nuttig? Geef ons een"
     },
     pl: {
         searchPlaceholder: "Szukaj repozytoriów...",
@@ -117,7 +128,8 @@ const i18n = {
         noRepos: "Nie znaleziono repozytoriów lub użytkownik nie istnieje",
         invalidPage: "Odwiedź stronę użytkownika lub repozytorium GitHub",
         notGitHub: "Odwiedź GitHub, aby użyć tego rozszerzenia",
-        loadFailed: "Nie można załadować repozytoriów"
+        loadFailed: "Nie można załadować repozytoriów",
+        starPrompt: "Podoba Ci się to rozszerzenie? Daj nam"
     }
 };
 

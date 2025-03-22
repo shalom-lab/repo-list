@@ -25,10 +25,19 @@ body {
   padding: 10px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .repo-item:hover {
   background: #f6f8fa;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.repo-item.expanded {
+  background-color: #f6f8fa;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 }
 
 .repo-name {
@@ -90,6 +99,15 @@ body {
     fill: #656d76;
 }
 
+.repo-item[data-stars]:not([data-stars="0"]) .star-count {
+    color: #24292f;
+    font-weight: 500;
+}
+
+.repo-item[data-stars]:not([data-stars="0"]) .star-icon {
+    fill: #f1c40f;
+}
+
 .star-count:hover {
     color: #0969da;
 }
@@ -137,6 +155,10 @@ body {
 .repo-details {
     display: none;
     padding: 8px 0;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
 .repo-item.expanded .expand-icon {
@@ -145,11 +167,30 @@ body {
 
 .repo-item.expanded .repo-details {
     display: block;
+    opacity: 1;
+    max-height: 500px; /* 一个足够大的值以适应内容 */
 }
 
-/* 为 star 数为 0 的仓库添加特殊样式 */
+/* 优化星标数为0的仓库显示和已加星仓库的高亮 */
 .repo-item[data-stars="0"] {
     opacity: 0.8;
+}
+
+.repo-item[data-stars]:not([data-stars="0"]) {
+    background-color: #f6f8fa;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.repo-item[data-stars]:not([data-stars="0"]):hover {
+    background-color: #f0f4f8;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.repo-item[data-stars]:not([data-stars="0"]) .repo-name {
+    color: #0969da;
 }
 
 .unstarred-section {
@@ -200,11 +241,17 @@ body {
     border-radius: 6px;
     outline: none;
     box-sizing: border-box;
+    transition: all 0.2s ease;
 }
 
 #repo-search:focus {
     border-color: #0969da;
     box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+    background-color: #fff;
+}
+
+#repo-search:hover {
+    border-color: #0969da;
 }
 
 .search-icon {
@@ -222,4 +269,49 @@ body {
 
 .unstarred-section.empty {
     display: none;
+}
+
+/* Star 提示框样式 */
+.star-prompt {
+    margin-top: 20px;
+    padding: 8px 12px;
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #24292f;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.star-prompt:hover {
+    background-color: #f0f2f5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.star-prompt a {
+    color: #0969da;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    margin: 0 4px;
+}
+
+.star-prompt a:hover {
+    text-decoration: underline;
+}
+
+.star-prompt .star-icon {
+    vertical-align: middle;
+    margin-right: 2px;
+    fill: #f1c40f;
 } 
