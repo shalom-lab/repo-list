@@ -4,6 +4,16 @@ on:
   push:
     tags:
       - 'v*' # 当推送版本标签时触发
+  workflow_dispatch: # 添加手动触发选项
+    inputs:
+      version:
+        description: '版本号 (例如: v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      release:
+        description: '是否发布到商店'
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -15,20 +25,65 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
-      - name: Create ZIP file
+          
+      - name: Get version
+        id: get_version
         run: |
-          zip -r chrome-extension.zip . \
-            -x "*.git*" \
-            -x "*.github*" \
-            -x "README.md" \
-            -x "LICENSE" \
-            -x "firefox/*"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+          fi
+          # 移除版本号前缀 'v'
+          CLEAN_VERSION="${VERSION#v}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Update manifest version
+        run: |
+          # 更新 manifest.json 的版本号
+          jq '.version = "${{ steps.get_version.outputs.CLEAN_VERSION }}"' manifest.json > temp.json && mv temp.json manifest.json
+          cat manifest.json
+
+      - name: Create ZIP file for Chrome
+        run: |
+          # 创建临时目录用于打包Chrome版本
+          mkdir -p chrome_build
+          
+          # 复制所有必要文件到临时目录
+          cp manifest.json chrome_build/
+          cp background.js chrome_build/
+          cp i18n.js chrome_build/
+          cp sidepanel.js chrome_build/
+          cp sidepanel.html chrome_build/
+          cp styles.css chrome_build/
+          cp LICENSE chrome_build/ || true
+          
+          # 复制icons目录
+          mkdir -p chrome_build/icons
+          cp -r icons/* chrome_build/icons/
+          
+          # 切换到临时目录并创建ZIP文件
+          cd chrome_build
+          zip -r ../chrome-extension.zip *
 
       - name: Create Firefox version
         run: |
-          mkdir firefox
-          cp -r * firefox/ 2>/dev/null || :
+          # 创建临时目录用于打包Firefox版本
+          mkdir -p firefox_build
+          
+          # 复制所有必要文件到临时目录
+          cp background.js firefox_build/
+          cp i18n.js firefox_build/
+          cp sidepanel.js firefox_build/
+          cp sidepanel.html firefox_build/
+          cp styles.css firefox_build/
+          cp LICENSE firefox_build/ || true
+          
+          # 复制icons目录
+          mkdir -p firefox_build/icons
+          cp -r icons/* firefox_build/icons/
+          
           # 修改 manifest.json 适配 Firefox
           jq '.manifest_version = 2 | 
               del(.action) |
@@ -42,9 +97,15 @@ jobs:
                   "48": "icons/icon48.png",
                   "128": "icons/icon128.png"
                 }
-              }' manifest.json > firefox/manifest.json
-          cd firefox
-          zip -r ../firefox-addon.zip .
+              } |
+              del(.commands._execute_action.suggested_key) |
+              .commands._execute_action.suggested_key = {
+                "default": "Alt+G"
+              }' manifest.json > firefox_build/manifest.json
+          
+          # 切换到临时目录并创建ZIP文件
+          cd firefox_build
+          zip -r ../firefox-addon.zip *
 
       - name: Upload Chrome artifact
         uses: actions/upload-artifact@v3
@@ -60,6 +121,7 @@ jobs:
 
   publish-chrome:
     needs: build
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
@@ -78,6 +140,7 @@ jobs:
 
   publish-firefox:
     needs: build
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
@@ -92,4 +155,89 @@ jobs:
           xpi: firefox-addon.zip
           manifest: manifest.json
           api-key: ${{ secrets.FIREFOX_API_KEY }}
-          api-secret: ${{ secrets.FIREFOX_API_SECRET }} 
+          api-secret: ${{ secrets.FIREFOX_API_SECRET }}
+
+  github-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Get version from tag or input
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=${{ github.event.inputs.prerelease }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+            echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+          fi
+        
+      - name: Download Chrome artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: chrome-extension
+      
+      - name: Download Firefox artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: firefox-addon
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # 从最近的两个标签获取更改日志
+          PREVIOUS_TAG=$(git tag --sort=-creatordate | sed -n 2p)
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # 如果只有一个标签，则获取从第一次提交到现在的日志
+            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges)
+          else
+            # 否则获取从上一个标签到现在的日志
+            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges ${PREVIOUS_TAG}..HEAD)
+          fi
+          
+          # 将更改日志保存到文件中
+          echo "$CHANGELOG" > changelog.txt
+          
+          # 创建多行输出变量
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "CHANGELOG<<$EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## 更新内容
+            
+            ${{ steps.changelog.outputs.CHANGELOG }}
+            
+            ## 下载
+            
+            - **Chrome版本**: chrome-extension.zip
+            - **Firefox版本**: firefox-addon.zip
+            
+            ## 安装说明
+            
+            ### Chrome
+            1. 下载 chrome-extension.zip
+            2. 解压文件
+            3. 打开Chrome浏览器，访问 `chrome://extensions/`
+            4. 开启右上角的"开发者模式"
+            5. 点击"加载已解压的扩展程序"，选择解压后的文件夹
+            
+            ### Firefox
+            1. 下载 firefox-addon.zip
+            2. 在Firefox中打开"about:debugging"
+            3. 点击"临时载入附加组件"
+            4. 选择下载的zip文件
+          files: |
+            chrome-extension.zip
+            firefox-addon.zip
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: ${{ steps.get_version.outputs.PRERELEASE }} 
