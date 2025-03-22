@@ -20,14 +20,14 @@ on:
         default: false
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         
@@ -54,7 +54,7 @@ jobs:
         jq '.version = "${{ steps.get_version.outputs.CLEAN_VERSION }}"' manifest.json > temp.json && mv temp.json manifest.json
         cat manifest.json
         
-    - name: Build Chromium-based Extension
+    - name: Build Chrome Extension
       run: |
         mkdir -p dist/chrome/icons
         cp manifest.json background.js i18n.js sidepanel.js sidepanel.html styles.css dist/chrome/
@@ -94,137 +94,60 @@ jobs:
         web-ext build --overwrite-dest
         mv web-ext-artifacts/*.zip ../firefox-addon.zip
 
-    - name: Upload Chrome artifact
-      uses: actions/upload-artifact@v3
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: chrome-extension
-        path: dist/chrome-extension.zip
-
-    - name: Upload Firefox artifact
-      uses: actions/upload-artifact@v3
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## GitHub Repo List Sidebar 扩展 v${{ steps.get_version.outputs.CLEAN_VERSION }}
+          
+          ## 更新内容
+          
+          <!-- 这里会在发布时手动填写更新内容 -->
+          
+          ## 下载
+          
+          - **Chrome版本**: chrome-extension.zip
+          - **Firefox版本**: firefox-addon.zip
+          
+          ## 安装说明
+          
+          ### Chrome/Edge/其他 Chromium 浏览器
+          1. 下载 chrome-extension.zip
+          2. 解压文件
+          3. 打开Chrome浏览器，访问 `chrome://extensions/`
+          4. 开启右上角的"开发者模式"
+          5. 点击"加载已解压的扩展程序"，选择解压后的文件夹
+          
+          ### Firefox
+          1. 下载 firefox-addon.zip
+          2. 在Firefox中打开"about:debugging"
+          3. 点击"临时载入附加组件"
+          4. 选择下载的zip文件
+        files: |
+          dist/chrome-extension.zip
+          dist/firefox-addon.zip
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+    
+    # 商店发布任务 (仅在手动触发时执行)
+    - name: Upload to Chrome Web Store
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
+      uses: mnao305/chrome-extension-upload@v4.0.1
       with:
-        name: firefox-addon
-        path: dist/firefox-addon.zip
-
-  publish-chrome:
-    needs: build
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: chrome-extension
-          
-      - name: Upload to Chrome Web Store
-        uses: mnao305/chrome-extension-upload@v4.0.1
-        with:
-          file-path: chrome-extension.zip
-          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-
-  publish-firefox:
-    needs: build
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: firefox-addon
-          
-      - name: Upload to Firefox Add-ons
-        uses: trmcnvn/firefox-addon@v1
-        with:
-          uuid: ${{ secrets.FIREFOX_ADDON_ID }}
-          xpi: firefox-addon.zip
-          manifest: manifest.json
-          api-key: ${{ secrets.FIREFOX_API_KEY }}
-          api-secret: ${{ secrets.FIREFOX_API_SECRET }}
-
-  github-release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+        file-path: dist/chrome-extension.zip
+        extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+        client-id: ${{ secrets.CHROME_CLIENT_ID }}
+        client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+        refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
         
-      - name: Get version from tag or input
-        id: get_version
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-            echo "PRERELEASE=${{ github.event.inputs.prerelease || 'false' }}" >> $GITHUB_OUTPUT
-          else
-            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-            echo "PRERELEASE=false" >> $GITHUB_OUTPUT
-          fi
-        
-      - name: Download Chrome artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: chrome-extension
-      
-      - name: Download Firefox artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: firefox-addon
-      
-      - name: Generate changelog
-        id: changelog
-        run: |
-          # 从最近的两个标签获取更改日志
-          PREVIOUS_TAG=$(git tag --sort=-creatordate | sed -n 2p)
-          if [ -z "$PREVIOUS_TAG" ]; then
-            # 如果只有一个标签，则获取从第一次提交到现在的日志
-            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges)
-          else
-            # 否则获取从上一个标签到现在的日志
-            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges ${PREVIOUS_TAG}..HEAD)
-          fi
-          
-          # 将更改日志保存到文件中
-          echo "$CHANGELOG" > changelog.txt
-          
-          # 创建多行输出变量
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "CHANGELOG<<$EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
-      
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: Release ${{ steps.get_version.outputs.VERSION }}
-          body: |
-            ## 更新内容
-            
-            ${{ steps.changelog.outputs.CHANGELOG }}
-            
-            ## 下载
-            
-            - **Chrome版本**: chrome-extension.zip
-            - **Firefox版本**: firefox-addon.zip
-            
-            ## 安装说明
-            
-            ### Chrome
-            1. 下载 chrome-extension.zip
-            2. 解压文件
-            3. 打开Chrome浏览器，访问 `chrome://extensions/`
-            4. 开启右上角的"开发者模式"
-            5. 点击"加载已解压的扩展程序"，选择解压后的文件夹
-            
-            ### Firefox
-            1. 下载 firefox-addon.zip
-            2. 在Firefox中打开"about:debugging"
-            3. 点击"临时载入附加组件"
-            4. 选择下载的zip文件
-          files: |
-            chrome-extension.zip
-            firefox-addon.zip
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: ${{ steps.get_version.outputs.PRERELEASE }} 
+    - name: Upload to Firefox Add-ons
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
+      uses: trmcnvn/firefox-addon@v1
+      with:
+        uuid: ${{ secrets.FIREFOX_ADDON_ID }}
+        xpi: dist/firefox-addon.zip
+        manifest: dist/firefox/manifest.json
+        api-key: ${{ secrets.FIREFOX_API_KEY }}
+        api-secret: ${{ secrets.FIREFOX_API_SECRET }} 
