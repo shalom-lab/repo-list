@@ -1,6 +1,6 @@
 # GitHub Repos Sidebar
 
-[English](#english) | [中文说明](README.zh.md)
+[English](#english) | [中文](README.zh.md)
 
 <p align="center">
   <img src="icons/icon128.png" alt="Logo" width="80" height="80">
