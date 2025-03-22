@@ -10,14 +10,6 @@
 
 A browser extension that displays GitHub repositories in a sidebar, making it easier to browse and search through a user's repositories. Supports 12 languages and provides a clean, GitHub-style interface.
 
-<p align="center">
-  <img src="screenshots/promo-large.png" alt="Preview" width="640">
-</p>
-
-<p align="center">
-  <img src="screenshots/promo-large.png" alt="Preview" width="640">
-</p>
-
 ### ✨ Features
 
 - 🔍 **Smart Sidebar**
@@ -81,6 +73,10 @@ A browser extension that displays GitHub repositories in a sidebar, making it ea
    - Navigate to `about:debugging`
    - Click "This Firefox"
    - Click "Load Temporary Add-on" and select the `manifest.json` file from the unzipped folder
+
+<p align="center">
+  <img src="screenshots/promo-large.png" alt="Preview" width="640">
+</p>
 
 ### 🎯 Usage
 
