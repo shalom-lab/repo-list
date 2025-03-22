@@ -61,7 +61,7 @@ jobs:
         cp -r icons/* dist/chrome/icons/
         cp LICENSE dist/chrome/ || true
         cd dist/chrome
-        zip -r ../chrome-extension.zip *
+        zip -r ../chrome-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip *
         
     - name: Build Firefox Extension
       run: |
@@ -92,7 +92,7 @@ jobs:
         # 使用 web-ext 构建 Firefox 扩展
         cd dist/firefox
         web-ext build --overwrite-dest
-        mv web-ext-artifacts/*.zip ../firefox-addon.zip
+        mv web-ext-artifacts/*.zip ../firefox-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
@@ -107,26 +107,26 @@ jobs:
           
           ## 下载
           
-          - **Chrome版本**: chrome-extension.zip
-          - **Firefox版本**: firefox-addon.zip
+          - **Chrome版本**: chrome-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
+          - **Firefox版本**: firefox-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
           
           ## 安装说明
           
           ### Chrome/Edge/其他 Chromium 浏览器
-          1. 下载 chrome-extension.zip
+          1. 下载 chrome-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
           2. 解压文件
           3. 打开Chrome浏览器，访问 `chrome://extensions/`
           4. 开启右上角的"开发者模式"
           5. 点击"加载已解压的扩展程序"，选择解压后的文件夹
           
           ### Firefox
-          1. 下载 firefox-addon.zip
+          1. 下载 firefox-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
           2. 在Firefox中打开"about:debugging"
           3. 点击"临时载入附加组件"
           4. 选择下载的zip文件
         files: |
-          dist/chrome-extension.zip
-          dist/firefox-addon.zip
+          dist/chrome-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
+          dist/firefox-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
         tag_name: ${{ steps.get_version.outputs.VERSION }}
         draft: false
         prerelease: false
@@ -136,7 +136,7 @@ jobs:
       if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
       uses: mnao305/chrome-extension-upload@v4.0.1
       with:
-        file-path: dist/chrome-extension.zip
+        file-path: dist/chrome-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
         extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
         client-id: ${{ secrets.CHROME_CLIENT_ID }}
         client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
@@ -147,7 +147,7 @@ jobs:
       uses: trmcnvn/firefox-addon@v1
       with:
         uuid: ${{ secrets.FIREFOX_ADDON_ID }}
-        xpi: dist/firefox-addon.zip
+        xpi: dist/firefox-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
         manifest: dist/firefox/manifest.json
         api-key: ${{ secrets.FIREFOX_API_KEY }}
         api-secret: ${{ secrets.FIREFOX_API_SECRET }} 

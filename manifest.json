@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "GitHub Repos Sidebar",
+    "name": "GitHub Repo List",
     "version": "1.0",
-    "description": "在GitHub页面显示用户仓库列表的侧边栏",
+    "description": "A browser extension that displays public GitHub repositories in sidebar",
     "icons": {
         "16": "icons/icon16.png",
         "48": "icons/icon48.png",
@@ -28,7 +28,7 @@
             "suggested_key": {
                 "default": "Alt+G"
             },
-            "description": "打开GitHub仓库侧边栏"
+            "description": "Open GitHub Repo List"
         }
     },
     "content_security_policy": {
