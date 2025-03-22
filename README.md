@@ -1,4 +1,4 @@
-# GitHub Repos Sidebar
+# GitHub Repo List
 
 [English](#english) | [中文](README.zh.md)
 
@@ -11,7 +11,7 @@
 A browser extension that displays GitHub repositories in a sidebar, making it easier to browse and search through a user's repositories. Supports 12 languages and provides a clean, GitHub-style interface.
 
 <p align="center">
-  <img src="screenshots/preview-en.png" alt="Preview" width="640">
+  <img src="screenshots/promo-large.png" alt="Preview" width="640">
 </p>
 
 ### ✨ Features
