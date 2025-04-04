@@ -58,9 +58,6 @@ A browser extension that displays GitHub repositories in a sidebar, making it ea
 1. Visit the [Chrome Web Store](https://chrome.google.com/webstore/detail/[extension-id]) (coming soon)
 2. Click "Add to Chrome"
 
-#### Firefox Add-ons
-1. Visit the [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/[addon-id]) (coming soon)
-2. Click "Add to Firefox"
 
 #### Manual Installation
 1. Download the latest release from [Releases](https://github.com/shalom-lab/repo-list/releases)
