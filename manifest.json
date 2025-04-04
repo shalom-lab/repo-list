@@ -1,19 +1,19 @@
 {
     "manifest_version": 3,
     "name": "GitHub Repo List",
-    "version": "1.0",
-    "description": "A browser extension that displays public GitHub repositories in sidebar",
+    "version": "1.0.0",
+    "description": "A browser extension that shows GitHub repositories in a convenient sidebar",
     "icons": {
         "16": "icons/icon16.png",
         "48": "icons/icon48.png",
         "128": "icons/icon128.png"
     },
     "permissions": [
-        "activeTab",
         "sidePanel",
         "tabs"
     ],
     "host_permissions": [
+        "https://github.com/*",
         "https://api.github.com/*"
     ],
     "side_panel": {
@@ -22,13 +22,20 @@
     "background": {
         "service_worker": "background.js"
     },
-    "action": {},
+    "action": {
+        "default_title": "GitHub Repo List",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png"
+        }
+    },
     "commands": {
         "_execute_action": {
             "suggested_key": {
                 "default": "Alt+G"
             },
-            "description": "Open GitHub Repo List"
+            "description": "Open GitHub Repo List sidebar"
         }
     },
     "content_security_policy": {

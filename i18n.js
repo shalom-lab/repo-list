@@ -1,146 +1,189 @@
-const i18n = {
-    zh: {
-        searchPlaceholder: "搜索仓库...",
-        noDescription: "暂无描述",
-        unstarredRepos: "未获得 Star 的仓库",
-        loadError: "加载失败，请稍后重试",
-        noRepos: "未找到仓库或用户不存在",
-        invalidPage: "请访问 GitHub 用户页面或仓库页面",
-        notGitHub: "请访问 GitHub 页面使用此扩展",
-        loadFailed: "无法加载仓库信息",
-        starPrompt: "喜欢此扩展？请给我们"
+const messages = {
+    'en-US': {
+        'loadFailed': 'Failed to load repositories',
+        'noRepos': 'No repositories found',
+        'notGitHub': 'This is not a GitHub page',
+        'invalidPage': 'Invalid GitHub page',
+        'loadError': 'Error loading repositories',
+        'noDescription': 'No description',
+        'unstarredRepos': 'Unstarred Repositories',
+        'searchPlaceholder': 'Search repositories...',
+        'starPrompt': 'Like this extension? Give it a'
     },
-    en: {
-        searchPlaceholder: "Search repositories...",
-        noDescription: "No description",
-        unstarredRepos: "Repositories without stars",
-        loadError: "Loading failed, please try again later",
-        noRepos: "No repositories found or user does not exist",
-        invalidPage: "Please visit a GitHub user or repository page",
-        notGitHub: "Please visit GitHub to use this extension",
-        loadFailed: "Failed to load repositories",
-        starPrompt: "Like this extension? Please give us a"
+    'en-GB': {
+        'loadFailed': 'Failed to load repositories',
+        'noRepos': 'No repositories found',
+        'notGitHub': 'This is not a GitHub page',
+        'invalidPage': 'Invalid GitHub page',
+        'loadError': 'Error loading repositories',
+        'noDescription': 'No description',
+        'unstarredRepos': 'Unstarred Repositories',
+        'searchPlaceholder': 'Search repositories...',
+        'starPrompt': 'Like this extension? Give it a'
     },
-    ja: {
-        searchPlaceholder: "リポジトリを検索...",
-        noDescription: "説明なし",
-        unstarredRepos: "スターのないリポジトリ",
-        loadError: "読み込みに失敗しました。後でもう一度お試しください",
-        noRepos: "リポジトリが見つからないか、ユーザーが存在しません",
-        invalidPage: "GitHubのユーザーページまたはリポジトリページにアクセスしてください",
-        notGitHub: "この拡張機能を使用するにはGitHubにアクセスしてください",
-        loadFailed: "リポジトリの読み込みに失敗しました",
-        starPrompt: "この拡張機能が気に入りましたか？"
+    'zh-CN': {
+        'loadFailed': '加载仓库失败',
+        'noRepos': '未找到仓库',
+        'notGitHub': '这不是 GitHub 页面',
+        'invalidPage': '无效的 GitHub 页面',
+        'loadError': '加载仓库时出错',
+        'noDescription': '暂无描述',
+        'unstarredRepos': '未获得 Star 的仓库',
+        'searchPlaceholder': '搜索仓库...',
+        'starPrompt': '喜欢这个扩展？给个'
     },
-    ko: {
-        searchPlaceholder: "저장소 검색...",
-        noDescription: "설명 없음",
-        unstarredRepos: "스타가 없는 저장소",
-        loadError: "로딩 실패, 나중에 다시 시도해주세요",
-        noRepos: "저장소를 찾을 수 없거나 사용자가 존재하지 않습니다",
-        invalidPage: "GitHub 사용자 또는 저장소 페이지를 방문해주세요",
-        notGitHub: "이 확장 프로그램을 사용하려면 GitHub을 방문하세요",
-        loadFailed: "저장소를 불러올 수 없습니다",
-        starPrompt: "이 확장 프로그램이 마음에 드나요?"
+    'zh-TW': {
+        'loadFailed': '載入儲存庫失敗',
+        'noRepos': '未找到儲存庫',
+        'notGitHub': '這不是 GitHub 頁面',
+        'invalidPage': '無效的 GitHub 頁面',
+        'loadError': '載入儲存庫時出錯',
+        'noDescription': '暫無描述',
+        'unstarredRepos': '未獲得 Star 的儲存庫',
+        'searchPlaceholder': '搜尋儲存庫...',
+        'starPrompt': '喜歡這個擴充功能？給個'
     },
-    fr: {
-        searchPlaceholder: "Rechercher des dépôts...",
-        noDescription: "Pas de description",
-        unstarredRepos: "Dépôts sans étoiles",
-        loadError: "Échec du chargement, veuillez réessayer plus tard",
-        noRepos: "Aucun dépôt trouvé ou l'utilisateur n'existe pas",
-        invalidPage: "Veuillez visiter une page utilisateur ou dépôt GitHub",
-        notGitHub: "Veuillez visiter GitHub pour utiliser cette extension",
-        loadFailed: "Impossible de charger les dépôts",
-        starPrompt: "Aimez cette extension? Donnez-nous une"
+    'zh-HK': {
+        'loadFailed': '載入儲存庫失敗',
+        'noRepos': '未找到儲存庫',
+        'notGitHub': '這不是 GitHub 頁面',
+        'invalidPage': '無效的 GitHub 頁面',
+        'loadError': '載入儲存庫時出錯',
+        'noDescription': '暫無描述',
+        'unstarredRepos': '未獲得 Star 的儲存庫',
+        'searchPlaceholder': '搜尋儲存庫...',
+        'starPrompt': '喜歡這個擴充功能？給個'
     },
-    de: {
-        searchPlaceholder: "Repositories durchsuchen...",
-        noDescription: "Keine Beschreibung",
-        unstarredRepos: "Repositories ohne Sterne",
-        loadError: "Laden fehlgeschlagen, bitte später erneut versuchen",
-        noRepos: "Keine Repositories gefunden oder Benutzer existiert nicht",
-        invalidPage: "Bitte besuchen Sie eine GitHub-Benutzer- oder Repository-Seite",
-        notGitHub: "Bitte besuchen Sie GitHub, um diese Erweiterung zu nutzen",
-        loadFailed: "Repositories konnten nicht geladen werden",
-        starPrompt: "Gefällt Ihnen diese Erweiterung? Geben Sie uns einen"
+    'ja-JP': {
+        'loadFailed': 'リポジトリの読み込みに失敗しました',
+        'noRepos': 'リポジトリが見つかりません',
+        'notGitHub': 'これはGitHubページではありません',
+        'invalidPage': '無効なGitHubページです',
+        'loadError': 'リポジトリの読み込みエラー',
+        'noDescription': '説明なし',
+        'unstarredRepos': 'スターのないリポジトリ',
+        'searchPlaceholder': 'リポジトリを検索...',
+        'starPrompt': 'この拡張機能が気に入りましたか？'
     },
-    es: {
-        searchPlaceholder: "Buscar repositorios...",
-        noDescription: "Sin descripción",
-        unstarredRepos: "Repositorios sin estrellas",
-        loadError: "Error de carga, por favor intente más tarde",
-        noRepos: "No se encontraron repositorios o el usuario no existe",
-        invalidPage: "Por favor visite una página de usuario o repositorio de GitHub",
-        notGitHub: "Por favor visite GitHub para usar esta extensión",
-        loadFailed: "No se pudieron cargar los repositorios",
-        starPrompt: "¿Te gusta esta extensión? Danos una"
+    'ko-KR': {
+        'loadFailed': '저장소 로드 실패',
+        'noRepos': '저장소를 찾을 수 없습니다',
+        'notGitHub': 'GitHub 페이지가 아닙니다',
+        'invalidPage': '잘못된 GitHub 페이지입니다',
+        'loadError': '저장소 로드 오류',
+        'noDescription': '설명 없음',
+        'unstarredRepos': '스타 없는 저장소',
+        'searchPlaceholder': '저장소 검색...',
+        'starPrompt': '이 확장 프로그램이 마음에 드시나요?'
     },
-    pt: {
-        searchPlaceholder: "Pesquisar repositórios...",
-        noDescription: "Sem descrição",
-        unstarredRepos: "Repositórios sem estrelas",
-        loadError: "Falha no carregamento, tente novamente mais tarde",
-        noRepos: "Nenhum repositório encontrado ou usuário não existe",
-        invalidPage: "Por favor, visite uma página de usuário ou repositório do GitHub",
-        notGitHub: "Por favor, visite o GitHub para usar esta extensão",
-        loadFailed: "Não foi possível carregar os repositórios",
-        starPrompt: "Gostou desta extensão? Dê-nos uma"
+    'fr-FR': {
+        'loadFailed': 'Échec du chargement des dépôts',
+        'noRepos': 'Aucun dépôt trouvé',
+        'notGitHub': "Ce n'est pas une page GitHub",
+        'invalidPage': 'Page GitHub invalide',
+        'loadError': 'Erreur de chargement des dépôts',
+        'noDescription': 'Aucune description',
+        'unstarredRepos': 'Dépôts sans étoile',
+        'searchPlaceholder': 'Rechercher des dépôts...',
+        'starPrompt': 'Vous aimez cette extension ? Donnez une'
     },
-    ru: {
-        searchPlaceholder: "Поиск репозиториев...",
-        noDescription: "Нет описания",
-        unstarredRepos: "Репозитории без звёзд",
-        loadError: "Ошибка загрузки, попробуйте позже",
-        noRepos: "Репозитории не найдены или пользователь не существует",
-        invalidPage: "Пожалуйста, посетите страницу пользователя или репозитория GitHub",
-        notGitHub: "Пожалуйста, посетите GitHub для использования этого расширения",
-        loadFailed: "Не удалось загрузить репозитории",
-        starPrompt: "Понравилось расширение? Поставьте нам"
+    'de-DE': {
+        'loadFailed': 'Repositories konnten nicht geladen werden',
+        'noRepos': 'Keine Repositories gefunden',
+        'notGitHub': 'Dies ist keine GitHub-Seite',
+        'invalidPage': 'Ungültige GitHub-Seite',
+        'loadError': 'Fehler beim Laden der Repositories',
+        'noDescription': 'Keine Beschreibung',
+        'unstarredRepos': 'Repositories ohne Stern',
+        'searchPlaceholder': 'Repositories durchsuchen...',
+        'starPrompt': 'Gefällt dir diese Erweiterung? Gib einen'
     },
-    it: {
-        searchPlaceholder: "Cerca repository...",
-        noDescription: "Nessuna descrizione",
-        unstarredRepos: "Repository senza stelle",
-        loadError: "Caricamento fallito, riprova più tardi",
-        noRepos: "Nessun repository trovato o utente non esistente",
-        invalidPage: "Visita una pagina utente o repository di GitHub",
-        notGitHub: "Visita GitHub per utilizzare questa estensione",
-        loadFailed: "Impossibile caricare i repository",
-        starPrompt: "Ti piace questa estensione? Dacci una"
+    'es-ES': {
+        'loadFailed': 'Error al cargar los repositorios',
+        'noRepos': 'No se encontraron repositorios',
+        'notGitHub': 'Esta no es una página de GitHub',
+        'invalidPage': 'Página de GitHub inválida',
+        'loadError': 'Error al cargar repositorios',
+        'noDescription': 'Sin descripción',
+        'unstarredRepos': 'Repositorios sin estrella',
+        'searchPlaceholder': 'Buscar repositorios...',
+        'starPrompt': '¿Te gusta esta extensión? Dale una'
     },
-    nl: {
-        searchPlaceholder: "Zoek repositories...",
-        noDescription: "Geen beschrijving",
-        unstarredRepos: "Repositories zonder sterren",
-        loadError: "Laden mislukt, probeer het later opnieuw",
-        noRepos: "Geen repositories gevonden of gebruiker bestaat niet",
-        invalidPage: "Bezoek een GitHub gebruikers- of repository-pagina",
-        notGitHub: "Bezoek GitHub om deze extensie te gebruiken",
-        loadFailed: "Kon repositories niet laden",
-        starPrompt: "Vindt u deze extensie nuttig? Geef ons een"
+    'pt-BR': {
+        'loadFailed': 'Falha ao carregar repositórios',
+        'noRepos': 'Nenhum repositório encontrado',
+        'notGitHub': 'Esta não é uma página do GitHub',
+        'invalidPage': 'Página do GitHub inválida',
+        'loadError': 'Erro ao carregar repositórios',
+        'noDescription': 'Sem descrição',
+        'unstarredRepos': 'Repositórios sem estrela',
+        'searchPlaceholder': 'Pesquisar repositórios...',
+        'starPrompt': 'Gosta desta extensão? Dê uma'
     },
-    pl: {
-        searchPlaceholder: "Szukaj repozytoriów...",
-        noDescription: "Brak opisu",
-        unstarredRepos: "Repozytoria bez gwiazdek",
-        loadError: "Błąd ładowania, spróbuj ponownie później",
-        noRepos: "Nie znaleziono repozytoriów lub użytkownik nie istnieje",
-        invalidPage: "Odwiedź stronę użytkownika lub repozytorium GitHub",
-        notGitHub: "Odwiedź GitHub, aby użyć tego rozszerzenia",
-        loadFailed: "Nie można załadować repozytoriów",
-        starPrompt: "Podoba Ci się to rozszerzenie? Daj nam"
+    'pt-PT': {
+        'loadFailed': 'Falha ao carregar repositórios',
+        'noRepos': 'Nenhum repositório encontrado',
+        'notGitHub': 'Esta não é uma página do GitHub',
+        'invalidPage': 'Página do GitHub inválida',
+        'loadError': 'Erro ao carregar repositórios',
+        'noDescription': 'Sem descrição',
+        'unstarredRepos': 'Repositórios sem estrela',
+        'searchPlaceholder': 'Pesquisar repositórios...',
+        'starPrompt': 'Gosta desta extensão? Dê uma'
+    },
+    'ru-RU': {
+        'loadFailed': 'Не удалось загрузить репозитории',
+        'noRepos': 'Репозитории не найдены',
+        'notGitHub': 'Это не страница GitHub',
+        'invalidPage': 'Недействительная страница GitHub',
+        'loadError': 'Ошибка загрузки репозиториев',
+        'noDescription': 'Нет описания',
+        'unstarredRepos': 'Репозитории без звезд',
+        'searchPlaceholder': 'Поиск репозиториев...',
+        'starPrompt': 'Нравится расширение? Поставьте'
+    },
+    'it-IT': {
+        'loadFailed': 'Impossibile caricare i repository',
+        'noRepos': 'Nessun repository trovato',
+        'notGitHub': 'Questa non è una pagina GitHub',
+        'invalidPage': 'Pagina GitHub non valida',
+        'loadError': 'Errore durante il caricamento dei repository',
+        'noDescription': 'Nessuna descrizione',
+        'unstarredRepos': 'Repository senza stelle',
+        'searchPlaceholder': 'Cerca repository...',
+        'starPrompt': 'Ti piace questa estensione? Dai una'
+    },
+    'nl-NL': {
+        'loadFailed': 'Kan repositories niet laden',
+        'noRepos': 'Geen repositories gevonden',
+        'notGitHub': 'Dit is geen GitHub-pagina',
+        'invalidPage': 'Ongeldige GitHub-pagina',
+        'loadError': 'Fout bij laden repositories',
+        'noDescription': 'Geen beschrijving',
+        'unstarredRepos': 'Repositories zonder ster',
+        'searchPlaceholder': 'Zoek repositories...',
+        'starPrompt': 'Vind je deze extensie leuk? Geef een'
+    },
+    'pl-PL': {
+        'loadFailed': 'Nie udało się załadować repozytoriów',
+        'noRepos': 'Nie znaleziono repozytoriów',
+        'notGitHub': 'To nie jest strona GitHub',
+        'invalidPage': 'Nieprawidłowa strona GitHub',
+        'loadError': 'Błąd ładowania repozytoriów',
+        'noDescription': 'Brak opisu',
+        'unstarredRepos': 'Repozytoria bez gwiazdki',
+        'searchPlaceholder': 'Szukaj repozytoriów...',
+        'starPrompt': 'Podoba Ci się to rozszerzenie? Daj'
     }
 };
 
-// 获取浏览器语言设置的前两个字符（语言代码）
-const browserLang = navigator.language.split('-')[0];
-
-// 检查是否支持当前语言，如果不支持则使用英语
-const currentLang = Object.keys(i18n).includes(browserLang) ? browserLang : 'en';
-
-function t(key) {
-    return i18n[currentLang][key] || i18n.en[key];
+export function t(key) {
+    const lang = navigator.language;
+    const shortLang = lang.split('-')[0];
+    
+    // 尝试完全匹配，然后是标准化的语言代码匹配，最后是英语
+    const translations = messages[lang] || 
+                        messages[`${shortLang}-${shortLang.toUpperCase()}`] || 
+                        messages['en-US'];
+    return translations[key] || messages['en-US'][key] || key;
 }
-
-export { t, currentLang }; 

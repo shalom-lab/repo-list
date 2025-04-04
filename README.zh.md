@@ -63,9 +63,6 @@
 1. 访问 [Chrome 网上应用店](https://chrome.google.com/webstore/detail/[extension-id])（即将上线）
 2. 点击"添加至 Chrome"
 
-#### Firefox 附加组件
-1. 访问 [Firefox 附加组件](https://addons.mozilla.org/firefox/addon/[addon-id])（即将上线）
-2. 点击"添加到 Firefox"
 
 #### 手动安装
 1. 从 [Releases](https://github.com/shalom-lab/repo-list/releases) 下载最新版本

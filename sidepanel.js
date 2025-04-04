@@ -113,6 +113,61 @@ function getLanguageColor(language) {
     return colors[language] || '#8b949e';
 }
 
+function formatSize(kbSize) {
+    if (!kbSize) return '';
+    if (kbSize < 1024) {
+        return `${kbSize} KB`;
+    } else if (kbSize < 1024 * 1024) {
+        return `${(kbSize / 1024).toFixed(1)} MB`;
+    } else {
+        return `${(kbSize / (1024 * 1024)).toFixed(1)} GB`;
+    }
+}
+
+function createRepoElement(repo) {
+    const repoDiv = document.createElement('div');
+    repoDiv.className = 'repo-item';
+    
+    const repoLink = document.createElement('a');
+    repoLink.href = repo.html_url;
+    repoLink.target = '_blank';
+    repoLink.className = 'repo-name';
+    repoLink.textContent = repo.name;
+    
+    const repoInfo = document.createElement('div');
+    repoInfo.className = 'repo-info';
+    
+    // 添加仓库大小信息（如果有）
+    if (repo.size) {
+        const sizeSpan = document.createElement('span');
+        sizeSpan.className = 'repo-size';
+        sizeSpan.title = 'Repository size';
+        sizeSpan.textContent = formatSize(repo.size);
+        repoInfo.appendChild(sizeSpan);
+    }
+    
+    // 添加语言信息（如果有）
+    if (repo.language) {
+        const langSpan = document.createElement('span');
+        langSpan.className = 'repo-language';
+        langSpan.textContent = repo.language;
+        repoInfo.appendChild(langSpan);
+    }
+    
+    // 添加星标数（如果有）
+    if (repo.stargazers_count > 0) {
+        const starsSpan = document.createElement('span');
+        starsSpan.className = 'repo-stars';
+        starsSpan.title = 'Stars';
+        starsSpan.textContent = `★ ${repo.stargazers_count}`;
+        repoInfo.appendChild(starsSpan);
+    }
+    
+    repoDiv.appendChild(repoLink);
+    repoDiv.appendChild(repoInfo);
+    return repoDiv;
+}
+
 function setupSearch() {
     const searchInput = document.getElementById('repo-search');
     let allRepoItems;
@@ -174,7 +229,7 @@ function renderRepos(repos) {
         return;
     }
     
-    // 将仓库分成两组：有star的和无star的
+    // 渲染有star的仓库
     const starredRepos = repos.filter(repo => repo.stargazers_count > 0)
         .sort((a, b) => b.stargazers_count - a.stargazers_count);
     const unstarredRepos = repos.filter(repo => repo.stargazers_count === 0);
@@ -251,6 +306,9 @@ function renderRepoItem(repo, container) {
         
     const updatedAt = formatDate(repo.updated_at);
     const starCount = repo.stargazers_count;
+    const sizeHtml = repo.size 
+        ? `<span class="repo-size">${formatSize(repo.size)}</span>` 
+        : '';
     const langHtml = repo.language 
         ? `<span class="repo-language">
             <span class="language-color" style="background-color: ${getLanguageColor(repo.language)}"></span>
@@ -265,6 +323,7 @@ function renderRepoItem(repo, container) {
                 <span class="expand-icon">▼</span>
             </div>
             <div class="repo-stats">
+                ${sizeHtml}
                 ${langHtml}
                 <span class="update-time">${updatedAt}</span>
                 <span class="star-count">
@@ -298,6 +357,7 @@ function renderRepoItem(repo, container) {
     container.appendChild(repoElement);
 }
 
+// 修改 init 函数以使用保存的设置
 async function init() {
     try {
         const tab = await getCurrentTab();

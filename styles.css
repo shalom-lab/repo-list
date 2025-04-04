@@ -159,6 +159,7 @@ body {
     max-height: 0;
     overflow: hidden;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .repo-item.expanded .expand-icon {
@@ -314,4 +315,32 @@ body {
     vertical-align: middle;
     margin-right: 2px;
     fill: #f1c40f;
+}
+
+.repo-size {
+    font-size: 12px;
+    color: #8b949e;
+    margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.repo-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.repo-header:hover {
+    cursor: zoom-in;
+}
+
+.repo-item.expanded .repo-header:hover {
+    cursor: zoom-out;
+}
+
+.repo-details:hover {
+    cursor: pointer;
 } 

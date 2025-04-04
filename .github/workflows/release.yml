@@ -141,13 +141,14 @@ jobs:
         client-id: ${{ secrets.CHROME_CLIENT_ID }}
         client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
         refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-        
-    - name: Upload to Firefox Add-ons
-      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
-      uses: trmcnvn/firefox-addon@v1
-      with:
-        uuid: ${{ secrets.FIREFOX_ADDON_ID }}
-        xpi: dist/firefox-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
-        manifest: dist/firefox/manifest.json
-        api-key: ${{ secrets.FIREFOX_API_KEY }}
-        api-secret: ${{ secrets.FIREFOX_API_SECRET }} 
+    
+    # 注释掉下面的代码  
+    # - name: Upload to Firefox Add-ons
+    #   if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release }}
+    #   uses: trmcnvn/firefox-addon@v1
+    #   with:
+    #     uuid: ${{ secrets.FIREFOX_ADDON_ID }}
+    #     xpi: dist/firefox-github-repo-list-${{ steps.get_version.outputs.CLEAN_VERSION }}.zip
+    #     manifest: dist/firefox/manifest.json
+    #     api-key: ${{ secrets.FIREFOX_API_KEY }}
+    #     api-secret: ${{ secrets.FIREFOX_API_SECRET }} 
