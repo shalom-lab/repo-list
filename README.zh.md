@@ -6,10 +6,14 @@
   <img src="icons/icon128.png" alt="Logo" width="80" height="80">
 </p>
 
-## 中文说明
 
 这是一个浏览器扩展，可以在侧边栏显示 GitHub 仓库，让您更轻松地浏览和搜索用户的仓库。支持12种语言，提供清晰的 GitHub 风格界面。
 
+### 截图
+
+<p align="center">
+  <img src="screenshots/screenshot.png" alt="Preview" width="640">
+</p>
 
 ### ✨ 主要功能
 

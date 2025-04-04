@@ -6,9 +6,14 @@
   <img src="icons/icon128.png" alt="Logo" width="80" height="80">
 </p>
 
-## English
 
 A browser extension that displays GitHub repositories in a sidebar, making it easier to browse and search through a user's repositories. Supports 12 languages and provides a clean, GitHub-style interface.
+
+### Screenshot
+
+<p align="center">
+  <img src="screenshots/screenshot.png" alt="Preview" width="640">
+</p>
 
 ### ✨ Features
 
